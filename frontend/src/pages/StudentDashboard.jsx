@@ -83,6 +83,11 @@ const StudentDashboard = () => {
     e.preventDefault();
     try {
       await api.post('/assessment', formData);
+      
+      if (formData.attendancePercentage < 65) {
+        alert('CRITICAL WARNING: Your attendance is below 65%. An alert has been sent to the administration and your student advisor.');
+      }
+
       fetchAssessments();
       setActiveTab('dashboard');
       window.scrollTo(0, 0);

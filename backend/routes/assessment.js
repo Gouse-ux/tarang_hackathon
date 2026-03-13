@@ -101,7 +101,13 @@ router.post('/', protect, async (req, res) => {
       socialActivity, mood, attendancePercentage, academicPerformance
     } = req.body;
 
-    const analysis = await getAIAnalysis(req.body);
+    let analysis = await getAIAnalysis(req.body);
+
+    if (attendancePercentage < 65) {
+      analysis.riskLevel = 'High Risk';
+      analysis.riskScore = Math.max(analysis.riskScore || 0, 0.85);
+      analysis.recommendation = 'CRITICAL: Your class attendance has dropped below 65%. Please contact your administration immediately. An alert has been sent to the admin.';
+    }
 
     const assessment = await Assessment.create({
       userId: req.user._id,

@@ -6,6 +6,7 @@ import authRoutes from './routes/auth.js';
 import assessmentRoutes from './routes/assessment.js';
 import chatRoutes from './routes/chat.js';
 import adminRoutes from './routes/admin.js';
+import resourceRoutes from './routes/resources.js';
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/assessment', assessmentRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/resources', resourceRoutes);
 
 app.get('/', (req, res) => {
   res.send('CampusGuardian API is running');

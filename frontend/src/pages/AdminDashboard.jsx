@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import api from '../services/api';
-import { LogOut, Activity, BarChart2, Bell, Shield, Zap, Home, TrendingUp, AlertTriangle, Users, BookOpen, Menu, X, ArrowUpRight } from 'lucide-react';
+import { LogOut, Activity, BarChart2, Bell, Shield, Zap, Home, TrendingUp, AlertTriangle, Users, BookOpen, Menu, X, ArrowUpRight, Database } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, CartesianGrid, PieChart, Pie, Cell } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -65,6 +65,7 @@ const AdminDashboard = () => {
     { id: 'overview', label: 'Intelligence Hash', icon: <Activity size={18}/> },
     { id: 'interventions', label: 'Alerts & Actions', icon: <Bell size={18}/> },
     { id: 'resources', label: 'Resource Optio', icon: <BarChart2 size={18}/> },
+    { id: 'resource-utilization', label: 'Resource Utilization', icon: <Database size={18}/>, path: '/admin/resource-utilization' },
   ];
 
   return (
@@ -97,8 +98,15 @@ const AdminDashboard = () => {
           {navItems.map((item) => (
             <div 
               key={item.id}
-              onClick={() => { setActiveTab(item.id); setMobileMenuOpen(false); }} 
-              className={`p-3 rounded-lg font-medium cursor-pointer flex items-center gap-3 transition-colors ${activeTab === item.id ? 'bg-primary-600/10 text-primary-400 border border-primary-500/20' : 'text-slate-400 hover:bg-slate-800 hover:text-white border border-transparent'}`}
+              onClick={() => { 
+                if (item.path) {
+                  navigate(item.path);
+                } else {
+                  setActiveTab(item.id); 
+                }
+                setMobileMenuOpen(false); 
+              }} 
+              className={`p-3 rounded-lg font-medium cursor-pointer flex items-center gap-3 transition-colors ${(!item.path && activeTab === item.id) ? 'bg-primary-600/10 text-primary-400 border border-primary-500/20' : 'text-slate-400 hover:bg-slate-800 hover:text-white border border-transparent'}`}
             >
               <div className={`${activeTab === item.id ? 'text-primary-500' : 'text-slate-500'}`}>{item.icon}</div>
               <span className="flex-1">{item.label}</span>
@@ -252,7 +260,7 @@ const AdminDashboard = () => {
                             <p className="text-3xl font-extrabold text-white">{resources?.metrics.electricityUsage}</p>
                             <span className="text-sm text-slate-400 font-medium">kWh</span>
                           </div>
-                          <button onClick={() => setActiveTab('resources')} className="w-full mt-4 py-2 bg-slate-800 hover:bg-slate-700 text-sm font-semibold rounded-lg transition-colors border border-slate-700">View Resource AI</button>
+                          <button onClick={() => navigate('/admin/resource-utilization')} className="w-full mt-4 py-2 bg-slate-800 hover:bg-slate-700 text-sm font-semibold rounded-lg transition-colors border border-slate-700">View Resource AI</button>
                         </div>
                       </div>
                     </div>
@@ -314,7 +322,7 @@ const AdminDashboard = () => {
                                   {alert.riskLevel}
                                 </span>
                               </td>
-                              <td className="py-4 px-6 text-slate-600 font-medium leading-relaxed max-w-xs truncate group-hover:whitespace-normal group-hover:break-words transition-all duration-300">
+                              <td className={`py-4 px-6 font-medium leading-relaxed max-w-xs truncate group-hover:whitespace-normal group-hover:break-words transition-all duration-300 ${alert.recommendation.startsWith('CRITICAL') ? 'text-red-600 font-bold bg-red-50/50' : 'text-slate-600'}`}>
                                 {alert.recommendation}
                               </td>
                               <td className="py-4 px-6">
@@ -373,7 +381,10 @@ const AdminDashboard = () => {
                        <Zap size={20} className="text-primary-500" />
                        Artificial Intelligence Optimization
                     </h3>
-                    <p className="text-sm font-medium text-slate-500 mb-8 max-w-lg">Based on historical density and real-time usage data, the CampusGuardian model suggests the following macro-allocations.</p>
+                    <div className="flex justify-between items-center mb-8">
+                      <p className="text-sm font-medium text-slate-500 max-w-lg">Based on historical density and real-time usage data, the CampusGuardian model suggests the following macro-allocations.</p>
+                      <button onClick={() => navigate('/admin/resource-utilization')} className="btn-primary py-2 px-4 text-xs">Manage Real Data</button>
+                    </div>
                     
                     <div className="space-y-4 flex-1">
                       {resources?.aiInsights.map((insight, idx) => (
@@ -384,7 +395,7 @@ const AdminDashboard = () => {
                           </div>
                           <div>
                             <p className="text-slate-800 font-semibold leading-relaxed mb-2 pr-8">{insight}</p>
-                            <button className="text-sm font-bold text-primary-600 group-hover:text-primary-800 transition-colors flex items-center gap-1">Review Implementation Plan <ArrowRight size={14}/></button>
+                            <button onClick={() => navigate('/admin/resource-utilization')} className="text-sm font-bold text-primary-600 group-hover:text-primary-800 transition-colors flex items-center gap-1">Review Implementation Plan <ArrowRight size={14}/></button>
                           </div>
                         </div>
                       ))}

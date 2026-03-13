@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import StudentDashboard from './pages/StudentDashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import ResourceDashboard from './pages/ResourceDashboard';
 
 const ProtectedRoute = ({ children, roleRequired }) => {
   const { user } = useContext(AuthContext);
@@ -37,6 +38,12 @@ function App() {
             <Route path="/admin" element={
               <ProtectedRoute roleRequired="admin">
                 <AdminDashboard />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/admin/resource-utilization" element={
+              <ProtectedRoute roleRequired="admin">
+                <ResourceDashboard />
               </ProtectedRoute>
             } />
 
